@@ -18,10 +18,11 @@ CMakeLists is provided, run something like:
 `cmake -S . -G "Your generator of choice"`
 
 Running:
-You can just run it as is, or provide exactly 3 arguments in the terminal: 
+You can just run it as is, or provide exactly 4 arguments in the terminal: 
 1. window width
 2. window height
 3. number of lines
+4. target fps
 
 Some combination of arguments seem to give better approximations.
 The standart configuration is good to at least get pi ~ 3.1
