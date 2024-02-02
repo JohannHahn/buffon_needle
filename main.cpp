@@ -16,7 +16,7 @@ Rectangle text_area;
 struct Stick {
     Vector2 p1;
     Vector2 p2;
-    Color col = BLACK;
+    Color col = DARKGRAY;
 };
 std::vector<Stick> sticks;
 
@@ -59,7 +59,6 @@ void print_vec(Vector2 vec) {
 
 Stick random_stick() {
     Stick stick;
-    stick.col = BLACK;
     stick.p1.x = randf(window_width);
     stick.p1.y = randf(window_height);
     stick.p2.x = randf(window_width);
@@ -122,14 +121,16 @@ int main(int argc, char** argv) {
     while(!WindowShouldClose()) {
 	Stick stick = random_stick();
 	if(crosses(stick)) {
-	    crossings ++;
+	    crossings++;
 	    stick.col = GREEN;
 	}
 	sticks.push_back(stick);
+
 	BeginDrawing();
 	ClearBackground(LIGHTGRAY);
+
 	for(int i = 0; i < num_lines; ++i) {
-	    DrawLine(i * gap, 0, i * gap, view_height, WHITE);
+	    DrawLine(i * gap, 0, i * gap, view_height, BLACK);
 	}
 	for(int i = 0; i < sticks.size(); ++i) {
 	    DrawLineEx(sticks[i].p1, sticks[i].p2, 1.f, sticks[i].col);
