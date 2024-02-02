@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 
-Color background_col = Color{0xFF,0x18, 0x18, 0x18};
 float window_width = 1000;
 float window_height = 1000;
 int num_lines = 100;
@@ -74,11 +73,12 @@ Stick random_stick() {
 
 int main(int argc, char** argv) {
     SetTraceLogLevel(LOG_ERROR);
+    int fps = 60;
     if(argc > 1) {
-	if(argc < 4) {
+	if(argc < 5) {
 	    std::cout << "too few arguments, reverting to standart settings\n"; 
 	}
-	else if(argc > 4) {
+	else if(argc > 5) {
 	    std::cout << "too many arguments, reverting to standart settings\n"; 
 	}
 	else {
@@ -87,24 +87,27 @@ int main(int argc, char** argv) {
 		window_width = (float)std::stoi(argv[1]);
 		window_height = (float)std::stoi(argv[2]);
 		num_lines = std::stoi(argv[3]);
+		fps = std::stoi(argv[4]);
 	    }
 	    catch(std::invalid_argument er) {
 		std::cout << "invalid arguments, reverting to standart settings\n";	
 		window_width = 1000;
 		window_height = 1000;
 		num_lines = 100;
+		fps = 100;
 	    }
 	}
     }
     else {
 
 	std::cout << "\n\n-------------------------\n";
-	std::cout << "starting with standart settings.\nYou can provide window width, height and number of lines as command arguments\n";
+	std::cout << "starting with standart settings.\nYou can provide window width, height, number of lines and target fps as command arguments\n";
 	std::cout << "-------------------------\n\n";
     }
     std::cout << "\nconfiguration:\nwindow width = " << window_width 
 	<< "\nwindow height = " << window_height 
-	<< "\nnumber of lines = " << num_lines << "\n";
+	<< "\nnumber of lines = " << num_lines
+	<< "\ntarget fps = " << fps << "\n";
 
     gap = window_width / num_lines;
     stick_length = gap / 2.f;
@@ -115,7 +118,7 @@ int main(int argc, char** argv) {
     SetRandomSeed(GetTime());
     int crossings = 0;
     InitWindow(window_width, window_height, "Buffon's needle");
-    //SetTargetFPS(30);
+    SetTargetFPS(fps);
     while(!WindowShouldClose()) {
 	Stick stick = random_stick();
 	if(crosses(stick)) {
@@ -124,7 +127,7 @@ int main(int argc, char** argv) {
 	}
 	sticks.push_back(stick);
 	BeginDrawing();
-	ClearBackground(background_col);
+	ClearBackground(LIGHTGRAY);
 	for(int i = 0; i < num_lines; ++i) {
 	    DrawLine(i * gap, 0, i * gap, view_height, WHITE);
 	}
@@ -142,6 +145,7 @@ int main(int argc, char** argv) {
 	DrawText(TextFormat("window width = %u", (int)window_width), config_text_offset, view_height + text_height, text_height, LIGHTGRAY);
 	DrawText(TextFormat("window height = %u", (int)window_height), config_text_offset, view_height + text_height * 2.f, text_height, LIGHTGRAY);
 	DrawText(TextFormat("number of lines = %u", num_lines), config_text_offset, view_height + text_height * 3.f, text_height, LIGHTGRAY);
+	DrawFPS(config_text_offset * 1.7f, view_height);
 
 	EndDrawing();
     }
