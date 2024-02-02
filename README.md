@@ -5,7 +5,9 @@ Full explanation:
 https://en.wikipedia.org/wiki/Buffon%27s_needle_problem
 
 This repo uses raylib as a submodule, do:
+
 git clone https://github.com/JohannHahn/buffon_needle.git --recurse-submodules 
+
 to get all the files.
 
 Raylib:
