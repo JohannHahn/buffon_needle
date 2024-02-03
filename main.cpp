@@ -11,6 +11,7 @@ float gap;
 float stick_length;
 float text_height;
 float view_height;
+size_t dropped = 0;
 Rectangle text_area;
 
 struct Stick {
@@ -18,7 +19,6 @@ struct Stick {
     Vector2 p2;
     Color col = DARKGRAY;
 };
-std::vector<Stick> sticks;
 
 float randf(float max) {
     float r = (float)GetRandomValue(0, RAND_MAX);
@@ -35,20 +35,9 @@ bool crosses(Stick s) {
     return false;
 }
 
-int get_crossings() {
-    int crossings = 0;
-    for(int i = 0; i < num_lines; ++i) {
-	float lx = i * gap;
-	for(const Stick& s: sticks) {
-	    if(s.p1.x < lx && s.p2.x > lx) crossings++;
-	    else if(s.p2.x < lx && s.p1.x > lx) crossings++;
-	}
-    }
-    return crossings;
-}
 
 float pi_aprox(float num_crossings) {
-    return (2.f * stick_length * (float)sticks.size()) / (gap * num_crossings); 
+    return (2.f * stick_length * dropped) / (gap * num_crossings); 
 }
 
 void print_vec(Vector2 vec) {
@@ -72,7 +61,7 @@ Stick random_stick() {
 
 int main(int argc, char** argv) {
     SetTraceLogLevel(LOG_ERROR);
-    int fps = 60;
+    int fps = 100;
     if(argc > 1) {
 	if(argc < 5) {
 	    std::cout << "too few arguments, reverting to standart settings\n"; 
@@ -118,37 +107,42 @@ int main(int argc, char** argv) {
     int crossings = 0;
     InitWindow(window_width, window_height, "Buffon's needle");
     SetTargetFPS(fps);
+
+    Image img = GenImageColor(window_width, window_height, LIGHTGRAY);
+    Texture tex = LoadTextureFromImage(img);
+    for(int i = 0; i < num_lines; ++i) {
+	ImageDrawLine(&img, i * gap, 0, i * gap, view_height, BLACK);
+    }
+
     while(!WindowShouldClose()) {
 	Stick stick = random_stick();
 	if(crosses(stick)) {
 	    crossings++;
 	    stick.col = GREEN;
 	}
-	sticks.push_back(stick);
 
 	BeginDrawing();
-	ClearBackground(LIGHTGRAY);
 
-	for(int i = 0; i < num_lines; ++i) {
-	    DrawLine(i * gap, 0, i * gap, view_height, BLACK);
-	}
-	for(int i = 0; i < sticks.size(); ++i) {
-	    DrawLineEx(sticks[i].p1, sticks[i].p2, 1.f, sticks[i].col);
-	}
+	ImageDrawLineV(&img, stick.p1, stick.p2, stick.col);
 
-	DrawRectangleRec(text_area, DARKGRAY);
+	ImageDrawRectangleRec(&img, text_area, DARKGRAY);
 	float pi = pi_aprox(crossings);
-	DrawText(TextFormat("crossings = %u", crossings), 0, view_height, text_height, LIGHTGRAY);
-	DrawText(TextFormat("dropped = %u", sticks.size()), 0, view_height + text_height, text_height, LIGHTGRAY);
-	DrawText(TextFormat("pi ~ %f", pi), 0, view_height + text_height * 2.f, text_height, LIGHTGRAY);
+	ImageDrawText(&img, TextFormat("crossings = %u", crossings), 0, view_height, text_height, LIGHTGRAY);
+	ImageDrawText(&img, TextFormat("dropped = %u", dropped), 0, view_height + text_height, text_height, LIGHTGRAY);
+	ImageDrawText(&img, TextFormat("pi ~ %f", pi), 0, view_height + text_height * 2.f, text_height, LIGHTGRAY);
 
-	DrawText("configuration: ", config_text_offset, view_height, text_height, LIGHTGRAY);
-	DrawText(TextFormat("window width = %u", (int)window_width), config_text_offset, view_height + text_height, text_height, LIGHTGRAY);
-	DrawText(TextFormat("window height = %u", (int)window_height), config_text_offset, view_height + text_height * 2.f, text_height, LIGHTGRAY);
-	DrawText(TextFormat("number of lines = %u", num_lines), config_text_offset, view_height + text_height * 3.f, text_height, LIGHTGRAY);
+	ImageDrawText(&img, "configuration: ", config_text_offset, view_height, text_height, LIGHTGRAY);
+	ImageDrawText(&img, TextFormat("window width = %u", (int)window_width), config_text_offset, view_height + text_height, text_height, LIGHTGRAY);
+	ImageDrawText(&img, TextFormat("window height = %u", (int)window_height), config_text_offset, view_height + text_height * 2.f, text_height, LIGHTGRAY);
+	ImageDrawText(&img, TextFormat("number of lines = %u", num_lines), config_text_offset, view_height + text_height * 3.f, text_height, LIGHTGRAY);
+
+	UnloadTexture(tex);
+	LoadTextureFromImage(img);
+	DrawTexture(tex, 0, 0, WHITE);
+
 	DrawFPS(config_text_offset * 1.7f, view_height);
-
 	EndDrawing();
+	dropped++;
     }
     CloseWindow();
     return 0;
