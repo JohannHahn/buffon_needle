@@ -109,13 +109,13 @@ int main(int argc, char** argv) {
 
     Image img = GenImageColor(window_width, window_height, LIGHTGRAY);
     Texture tex = LoadTextureFromImage(img);
-    for(int i = 0; i < num_lines; ++i) {
+    for (int i = 0; i < num_lines; ++i) {
 	ImageDrawLine(&img, i * gap, 0, i * gap, view_height, BLACK);
     }
 
-    while(!WindowShouldClose()) {
+    while (!WindowShouldClose()) {
 	Stick stick = random_stick();
-	if(crosses(stick)) {
+	if (crosses(stick)) {
 	    crossings++;
 	    stick.col = GREEN;
 	}
@@ -135,9 +135,8 @@ int main(int argc, char** argv) {
 	ImageDrawText(&img, TextFormat("window height = %u", (int)window_height), config_text_offset, view_height + text_height * 2.f, text_height, LIGHTGRAY);
 	ImageDrawText(&img, TextFormat("number of lines = %u", num_lines), config_text_offset, view_height + text_height * 3.f, text_height, LIGHTGRAY);
 
-	UnloadTexture(tex);
-	LoadTextureFromImage(img);
 	DrawTexture(tex, 0, 0, WHITE);
+	UpdateTexture(tex, img.data);
 
 	DrawFPS(config_text_offset * 1.7f, view_height);
 	EndDrawing();

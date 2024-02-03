@@ -32,4 +32,4 @@ You can just run it as is, or provide exactly 4 arguments in the terminal:
 4. target fps
 
 Some combination of arguments seem to give better approximations.
-The standart configuration is good to at least get pi ~ 3.1
+The standard configuration is good to at least get pi ~ 3.1
