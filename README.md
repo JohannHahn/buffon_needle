@@ -15,7 +15,7 @@ https://github.com/raysan5/raylib
 Build:
 CMakeLists is provided, run something like:
 
-`cmake -S . -G "Your generator of choice"`
+`cmake -S . -G "Your build system"`
 
 Running:
 You can just run it as is, or provide exactly 4 arguments in the terminal: 
