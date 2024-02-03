@@ -1,10 +1,13 @@
 # buffon_needle
 Simulation of the Buffon's needle problem, used to approximate Pi.
+
+Usually people use Pi to create the randomly rotated sticks, but I think using Pi to approximate Pi is cheating :).
+
 My method doesn't use Pi in any way for the approximation.
 The randomly rotated sticks are created by first creating two random points 
 and scaling the line they make to be of the predetermined length < the gap between the lines.
 
-Full explanation:
+Full explanation of the problem:
 https://en.wikipedia.org/wiki/Buffon%27s_needle_problem
 
 This repo uses raylib as a submodule, do:
