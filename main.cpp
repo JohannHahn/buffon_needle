@@ -2,7 +2,6 @@
 #include "raylib/src/raymath.h"
 #include <iostream>
 #include <string>
-#include <vector>
 
 float window_width = 1000;
 float window_height = 1000;
